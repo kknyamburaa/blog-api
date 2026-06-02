@@ -3,28 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Http\Resources\CommentResource;
+use App\Http\Requests\StoreCommentRequest;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
    public function index()
    {
-    return response()->json(Comment::all());
+    return CommentResource::collection(Comment::all());
    }
    
-   public function store(Request $request)
+   public function store(StoreCommentRequest $request)
    {
     $comment = Comment::create([
         'post_id' => $request->post_id,
         'user_id' => auth()->id(),
         'content' => $request->content,
     ]);
-    return response()->json($comment, 201);
+    return new CommentResource($comment)
+              ->response()
+              ->setStatusCode(201);
    }
    
    public function destroy($id)
    {
-    $comment = Comment::find($id);
+    $comment = Comment::findOrFail($id);
     $comment->delete();
     return response()->json(null, 204);
    }

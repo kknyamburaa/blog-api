@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -11,22 +15,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        return UserResource::collection(User::all());
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
-        
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($validated['password']);
+
         $user = User::create($validated);
-        return response()->json($user, 201);
+        return new UserResource($user)
+                    ->response()
+                    ->setStatusCode(201);
     }
 
     /**
@@ -34,18 +37,22 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::find($id);
-        return response()->json($user);
+        $user = User::findOrFail($id);
+        return new UserResource($user)
+                    ->response()
+                    ->setStatusCode(200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, string $id)
     {
-        $user = User::find($id);
-        $user->update($request->all());
-        return response()->json($user);
+        $user = User::findOrFail($id);
+        $user->update($request->validated());
+        return new UserResource($user)
+                    ->response()
+                    ->setStatusCode(200);
     }
 
     /**
@@ -53,7 +60,7 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->delete();
         return response()->json(null, 204);
     }
