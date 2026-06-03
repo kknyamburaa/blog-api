@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-class comment extends Model
+class Comment extends Model
 {
+
+    use HasFactory;
+
     protected $fillable = [
-        'post_id',
         'user_id',
+        'post_id',
         'body',
     ];
     
@@ -21,4 +26,5 @@ class comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
 }

@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class post extends Model
-{
+class Post extends Model
+{ 
+    use HasFactory;
+    
     protected $fillable = [
         'title',
         'body',
         'user_id',
+        'category_id',
     ];
     
     public function user()
@@ -28,4 +32,5 @@ class post extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
 }
