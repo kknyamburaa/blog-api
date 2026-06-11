@@ -61,4 +61,9 @@ class FollowController extends Controller
             'following' => $following
         ]);
     }
+    
+    if(!auth()->check()) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
 }

@@ -23,6 +23,10 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
+       if(!(request()->user() || (auth()->user()->role === 'admin' || auth()->user()->role === 'moderator'))) {
+           return response()->json(['message' => 'Unauthorized'], 403);
+       }
+
         $validated = $request->validated();
         $post=Post::create($validated);
         return new PostResource($post)
@@ -46,6 +50,10 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, string $id)
     {
+        if(!(auth()->user()->role === 'admin' || auth()->user()->role === 'moderator')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        
         $post = Post::findOrFail($id);
         $post->update($request->validated());
         return new PostResource($post)
@@ -58,6 +66,10 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
+        if(!(auth()->user()->role === 'admin' || auth()->user()->role === 'moderator')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        
         $post = Post::findOrFail($id);
         $post->delete();
         return response()->json(null, 204);

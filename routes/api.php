@@ -15,6 +15,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    Route::get('/admin', function () {
+        return response()->json([
+            'message' => 'Welcome to the admin dashboard!'
+        ]);
+    });
+});
+
 Route::middleware('auth:sanctum')->group(function () {
 Route::post('/users/{user}/follow', [FollowController::class, 'follow']);
 Route::delete('/users/{user}/unfollow', [FollowController::class, 'unfollow']);
