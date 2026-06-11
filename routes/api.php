@@ -27,14 +27,16 @@ Route::apiResource('users', UserController::class);
 Route::apiResource('posts', PostController::class);
 
 Route::apiResource('categories', CategoryController::class);
-
+// Comments
 Route::get('/posts/{id}/comments', [CommentController::class, 'index']);
 Route::post('/posts/{id}/comments', [CommentController::class, 'store']);
 Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
 
+// Likes
 Route::post('/posts/{id}/likes', [LikeController::class, 'store']);
 Route::delete('/posts/{id}/likes', [LikeController::class, 'destroy']);
 
+// Authentication
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
