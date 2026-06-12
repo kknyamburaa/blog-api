@@ -64,4 +64,14 @@ class UserController extends Controller
         $user->delete();
         return response()->json(null, 204);
     }
+    
+    public function is_admin()
+    {
+        return auth()->user()->role === 'admin';
+    }
+    
+    public function is_moderator()
+    {
+        return auth()->user()->role === 'moderator';
+    }
 }

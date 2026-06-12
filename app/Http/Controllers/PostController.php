@@ -7,6 +7,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -24,6 +25,8 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $validated = $request->validated();
+        $validated['user_id'] = auth()->user()->id;
+        Gate::authorize('create', Post::class);
         $post=Post::create($validated);
         return new PostResource($post)
             ->response()
@@ -36,6 +39,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::findOrFail($id);
+        Gate::authorize('view', $post);
         return new PostResource($post)
             ->response()
             ->setStatusCode(200);
@@ -45,12 +49,13 @@ class PostController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdatePostRequest $request, string $id)
-    {
+    {  
         $post = Post::findOrFail($id);
+        Gate::authorize('update', $post);
         $post->update($request->validated());
         return new PostResource($post)
             ->response()
-            ->setStatusCode(200);
+            ->setStatusCode(201);
     }
 
     /**
@@ -59,6 +64,7 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = Post::findOrFail($id);
+        Gate::authorize('delete', $post);
         $post->delete();
         return response()->json(null, 204);
     }
