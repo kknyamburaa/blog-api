@@ -21,11 +21,11 @@ class StorePostRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {  
         return [
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'body' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
         ];
     }
 }

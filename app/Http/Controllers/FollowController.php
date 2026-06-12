@@ -24,7 +24,7 @@ class FollowController extends Controller
                 'error' => 'You cannot follow yourself.'
             ], 400);
         }
-        
+                    
         $currentUser->following()->attach($user->id);
         return response()->json([
             'message' => "i love you bitch"
@@ -60,10 +60,6 @@ class FollowController extends Controller
         return response()->json([
             'following' => $following
         ]);
-    }
-    
-    if(!auth()->check()) {
-        return response()->json(['message' => 'Unauthorized'], 403);
     }
 
 }

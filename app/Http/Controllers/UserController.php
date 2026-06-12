@@ -74,8 +74,4 @@ class UserController extends Controller
     {
         return auth()->user()->role === 'moderator';
     }
-
-    if(!(auth()->user()->role === 'admin' || auth()->user()->role === 'moderator')) {
-        return response()->json(['message' => 'Unauthorized'], 403);
-    }
 }
